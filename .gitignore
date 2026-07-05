@@ -2,3 +2,7 @@
 KeepAwake.app/
 *.xcodeproj
 .DS_Store
+
+# Icon build intermediates (KeepAwake.icns is committed).
+icon/AppIcon.iconset/
+icon/icon_master.png

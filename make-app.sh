@@ -7,11 +7,17 @@ set -euo pipefail
 APP="KeepAwake.app"
 CONTENTS="$APP/Contents"
 MACOS="$CONTENTS/MacOS"
+RESOURCES="$CONTENTS/Resources"
 
 swift build -c release
 rm -rf "$APP"
-mkdir -p "$MACOS"
+mkdir -p "$MACOS" "$RESOURCES"
 cp ".build/release/KeepAwake" "$MACOS/KeepAwake"
+
+# App icon (regenerate with ./icon/build-icns.sh). Optional — skip if absent.
+if [ -f "KeepAwake.icns" ]; then
+    cp "KeepAwake.icns" "$RESOURCES/KeepAwake.icns"
+fi
 
 cat > "$CONTENTS/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -25,6 +31,7 @@ cat > "$CONTENTS/Info.plist" <<'PLIST'
     <key>CFBundleShortVersionString</key><string>1.0</string>
     <key>CFBundlePackageType</key>       <string>APPL</string>
     <key>CFBundleExecutable</key>        <string>KeepAwake</string>
+    <key>CFBundleIconFile</key>          <string>KeepAwake</string>
     <key>LSMinimumSystemVersion</key>    <string>13.0</string>
     <key>LSUIElement</key>               <true/>
 </dict>
