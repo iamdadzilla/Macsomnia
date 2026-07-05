@@ -25,8 +25,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func applicationWillTerminate(_ notification: Notification) {
         // Safety: never leave the Mac unable to sleep after quit.
-        try? power.disable()
         overlay.hide()
+        do {
+            try power.disable()
+        } catch {
+            FileHandle.standardError.write(Data("KeepAwake: failed to restore sleep on quit: \(error)\n".utf8))
+            let alert = NSAlert()
+            alert.messageText = "KeepAwake could not restore normal sleep"
+            alert.informativeText = """
+            Your Mac may remain unable to sleep. Run this in Terminal to fix it:
+
+            sudo pmset -b disablesleep 0; sudo pmset -b sleep 5
+
+            (\(error))
+            """
+            alert.alertStyle = .critical
+            alert.runModal()
+        }
     }
 
     // MARK: - Wiring
