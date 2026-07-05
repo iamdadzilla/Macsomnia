@@ -209,3 +209,25 @@ StateMonitor (every ~5s) ──────────────┴─▶ rea
 - Xcode project for the SwiftUI app.
 - `install-sudoers.sh` setup script.
 - README: build, sudoers setup, usage.
+
+## Future: publishing (v2 — out of scope for this build)
+
+Captured so it isn't lost; not implemented in v1. Build and validate the
+personal/sudoers version first, then consider a distribution pass:
+
+- **Name:** avoid "Redbull" (trademark risk). Candidate: "Redline" (on-theme
+  with the red strip / running hardware hard). Alternatives: NoDoze, Lidless,
+  Vigil, Wideawake.
+- **GitHub:** MIT license, README with a prominent thermal/hardware warning
+  (clamshell + no external display defeats a thermal-protective behavior; fine
+  for light AI jobs, risky under sustained load), GitHub Actions to build + zip
+  the `.app` and attach to Releases.
+- **Homebrew:** ship first via a personal tap (`brew install --cask
+  jperry/<tap>/<name>`); official `homebrew/cask` later (notability bar +
+  notarization). Requires a Developer ID account ($99/yr) for
+  signing/notarization to avoid Gatekeeper friction.
+- **Privilege model for distribution:** replace the hardcoded sudoers file with
+  a `SMAppService` privileged helper + XPC (no sudoers), which is the
+  notarization-friendly, distribution-shaped design.
+- **App Store:** not viable — disabling clamshell sleep circumvents a
+  thermal-protective behavior and needs root (sandbox-incompatible).
