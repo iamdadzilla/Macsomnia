@@ -19,6 +19,7 @@ public final class StateMonitor {
         }
     }
 
+    /// Must be called on the main thread: the timer is scheduled on the main run loop.
     public func start(interval: TimeInterval) {
         stop()
         let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in

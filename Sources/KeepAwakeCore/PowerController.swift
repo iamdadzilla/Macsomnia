@@ -51,9 +51,11 @@ public final class RealPowerController: PowerControlling {
         process.standardOutput = stdout
         process.standardError = stderr
         try process.run()
-        process.waitUntilExit()
+        // Drain both pipes to EOF before waiting, so a child that writes more
+        // than the OS pipe buffer can't block and deadlock waitUntilExit().
         let outData = stdout.fileHandleForReading.readDataToEndOfFile()
         let errData = stderr.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
         guard process.terminationStatus == 0 else {
             let message = String(data: errData, encoding: .utf8) ?? "unknown error"
             throw PmsetError(code: process.terminationStatus, message: message)

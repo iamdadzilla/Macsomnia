@@ -145,4 +145,14 @@ final class AppStateTests: XCTestCase {
         try state.enable(.indefinite)
         XCTAssertEqual(state.statusText(now: fixedNow), "ON — until turned off")
     }
+
+    func testStatusTextExternalAndTimed() throws {
+        state.observe(systemDisabled: true)
+        XCTAssertEqual(state.statusText(now: fixedNow), "ON — set outside this app")
+
+        state.observe(systemDisabled: false)   // reset to OFF
+        try state.enable(.fourHours)
+        let later = fixedNow.addingTimeInterval(3600)   // 3h left
+        XCTAssertEqual(state.statusText(now: later), "ON — 3:00 remaining")
+    }
 }
