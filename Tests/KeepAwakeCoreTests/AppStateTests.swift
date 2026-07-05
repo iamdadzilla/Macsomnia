@@ -60,4 +60,52 @@ final class AppStateTests: XCTestCase {
         try state.disableByUser()
         XCTAssertEqual(visual, [true, false])
     }
+
+    func testObserveExternalDetectionTurnsOnAndAlertsOnce() {
+        var alerts = 0
+        state.onExternalDetected = { alerts += 1 }
+        state.observe(systemDisabled: true)   // external turns it on
+        XCTAssertTrue(state.isOn)
+        XCTAssertFalse(state.initiatedByApp)
+        XCTAssertNil(state.expiry)
+        state.observe(systemDisabled: true)   // still external, no repeat alert
+        XCTAssertEqual(alerts, 1)
+    }
+
+    func testObserveTrueWhileAppInitiatedIsNoOp() throws {
+        try state.enable(.indefinite)
+        var alerts = 0
+        state.onExternalDetected = { alerts += 1 }
+        state.observe(systemDisabled: true)
+        XCTAssertTrue(state.isOn)
+        XCTAssertTrue(state.initiatedByApp)
+        XCTAssertEqual(alerts, 0)
+    }
+
+    func testObserveFalseWhileOnReconcilesOff() throws {
+        try state.enable(.indefinite)
+        var reconciled = 0
+        state.onReconciledOff = { reconciled += 1 }
+        state.observe(systemDisabled: false)
+        XCTAssertFalse(state.isOn)
+        XCTAssertNil(state.expiry)
+        XCTAssertEqual(reconciled, 1)
+    }
+
+    func testObserveFalseWhileOffIsNoOp() {
+        var reconciled = 0
+        state.onReconciledOff = { reconciled += 1 }
+        state.observe(systemDisabled: false)
+        XCTAssertFalse(state.isOn)
+        XCTAssertEqual(reconciled, 0)
+    }
+
+    func testExternalThenOffThenExternalAlertsTwice() {
+        var alerts = 0
+        state.onExternalDetected = { alerts += 1 }
+        state.observe(systemDisabled: true)   // external on -> alert 1
+        state.observe(systemDisabled: false)  // off
+        state.observe(systemDisabled: true)   // external on again -> alert 2
+        XCTAssertEqual(alerts, 2)
+    }
 }

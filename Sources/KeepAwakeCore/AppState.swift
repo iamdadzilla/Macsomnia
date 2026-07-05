@@ -40,6 +40,22 @@ public final class AppState: ObservableObject {
         resetOff()
     }
 
+    /// Reconciles UI state to the real system state observed by polling.
+    /// The system value is authoritative.
+    public func observe(systemDisabled: Bool) {
+        if systemDisabled {
+            guard !isOn else { return }   // already on (by us or previously-detected external)
+            initiatedByApp = false
+            setExpiry(nil)
+            isOn = true
+            onExternalDetected()
+        } else {
+            guard isOn else { return }
+            resetOff()
+            onReconciledOff()
+        }
+    }
+
     // MARK: - Private
 
     private func setExpiry(_ date: Date?) {
