@@ -108,4 +108,41 @@ final class AppStateTests: XCTestCase {
         state.observe(systemDisabled: true)   // external on again -> alert 2
         XCTAssertEqual(alerts, 2)
     }
+
+    func testAutoOffExpiredDisablesAndNotifies() throws {
+        try state.enable(.twoHours)
+        var autoOffs = 0
+        state.onAutoOff = { autoOffs += 1 }
+        state.autoOffExpired()
+        XCTAssertFalse(state.isOn)
+        XCTAssertNil(state.expiry)
+        XCTAssertEqual(mock.disableCount, 1)
+        XCTAssertEqual(autoOffs, 1)
+    }
+
+    func testMenuTextOffIsNil() {
+        XCTAssertNil(state.menuText(now: fixedNow))
+    }
+
+    func testMenuTextExternal() {
+        state.observe(systemDisabled: true)
+        XCTAssertEqual(state.menuText(now: fixedNow), "Awake (ext)")
+    }
+
+    func testMenuTextIndefinite() throws {
+        try state.enable(.indefinite)
+        XCTAssertEqual(state.menuText(now: fixedNow), "Awake ∞")
+    }
+
+    func testMenuTextTimedShowsCountdown() throws {
+        try state.enable(.fourHours)
+        let later = fixedNow.addingTimeInterval(3600)   // 3h left
+        XCTAssertEqual(state.menuText(now: later), "Awake 3:00")
+    }
+
+    func testStatusTextVariants() throws {
+        XCTAssertEqual(state.statusText(now: fixedNow), "OFF")
+        try state.enable(.indefinite)
+        XCTAssertEqual(state.statusText(now: fixedNow), "ON — until turned off")
+    }
 }

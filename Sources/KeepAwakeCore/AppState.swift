@@ -56,6 +56,28 @@ public final class AppState: ObservableObject {
         }
     }
 
+    public func autoOffExpired() {
+        try? power.disable()
+        resetOff()
+        onAutoOff()
+    }
+
+    /// Compact text for the menu-bar label. `nil` means "OFF" (show icon only).
+    public func menuText(now: Date) -> String? {
+        guard isOn else { return nil }
+        if !initiatedByApp { return "Awake (ext)" }
+        guard let expiry else { return "Awake ∞" }
+        return "Awake " + Countdown.format(remaining: expiry.timeIntervalSince(now))
+    }
+
+    /// Full status line shown inside the menu.
+    public func statusText(now: Date) -> String {
+        guard isOn else { return "OFF" }
+        if !initiatedByApp { return "ON — set outside this app" }
+        guard let expiry else { return "ON — until turned off" }
+        return "ON — " + Countdown.format(remaining: expiry.timeIntervalSince(now)) + " remaining"
+    }
+
     // MARK: - Private
 
     private func setExpiry(_ date: Date?) {
