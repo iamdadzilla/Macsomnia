@@ -1,0 +1,4 @@
+.build/
+KeepAwake.app/
+*.xcodeproj
+.DS_Store
