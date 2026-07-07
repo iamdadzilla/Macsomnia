@@ -1,6 +1,6 @@
 import AppKit
 
-// Renders the KeepAwake app icon (red rounded square with a white,
+// Renders the Macsomnia app icon (red rounded square with a white,
 // crossed-out "Zzz") to a PNG at the path given as the first argument.
 // Usage: swift make-icon.swift <output.png> [sizePx]
 

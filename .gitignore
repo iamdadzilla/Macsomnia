@@ -1,8 +1,8 @@
 .build/
-KeepAwake.app/
+Macsomnia.app/
 *.xcodeproj
 .DS_Store
 
-# Icon build intermediates (KeepAwake.icns is committed).
+# Icon build intermediates (Macsomnia.icns is committed).
 icon/AppIcon.iconset/
 icon/icon_master.png

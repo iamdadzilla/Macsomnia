@@ -1,5 +1,5 @@
 import XCTest
-@testable import KeepAwakeCore
+@testable import MacsomniaCore
 
 final class AppStateTests: XCTestCase {
     private var mock: MockPowerController!

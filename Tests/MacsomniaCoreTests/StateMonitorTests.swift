@@ -1,5 +1,5 @@
 import XCTest
-@testable import KeepAwakeCore
+@testable import MacsomniaCore
 
 final class StateMonitorTests: XCTestCase {
     func testPollForwardsObservedValue() {

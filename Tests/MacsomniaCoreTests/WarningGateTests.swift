@@ -1,5 +1,5 @@
 import XCTest
-@testable import KeepAwakeCore
+@testable import MacsomniaCore
 
 private final class MemoryStore: FlagStore {
     private var values: [String: Bool] = [:]

@@ -1,5 +1,5 @@
 import SwiftUI
-import KeepAwakeCore
+import MacsomniaCore
 
 struct MenuLabel: View {
     @ObservedObject var state: AppState
@@ -43,7 +43,7 @@ struct SlashedZzz: View {
 struct MenuContent: View {
     @ObservedObject var state: AppState
     let tick: Date
-    let onEnable: (KeepAwakeDuration) -> Void
+    let onEnable: (MacsomniaDuration) -> Void
     let onDisable: () -> Void
 
     var body: some View {
@@ -54,13 +54,13 @@ struct MenuContent: View {
         if state.isOn {
             Button("Disable now", action: onDisable)
         } else {
-            ForEach(KeepAwakeDuration.allCases, id: \.self) { duration in
+            ForEach(MacsomniaDuration.allCases, id: \.self) { duration in
                 Button(duration.menuLabel) { onEnable(duration) }
             }
         }
 
         Divider()
 
-        Button("Quit KeepAwake") { NSApplication.shared.terminate(nil) }
+        Button("Quit Macsomnia") { NSApplication.shared.terminate(nil) }
     }
 }

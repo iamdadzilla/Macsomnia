@@ -1,8 +1,8 @@
 import SwiftUI
-import KeepAwakeCore
+import MacsomniaCore
 
 @main
-struct KeepAwakeApp: App {
+struct MacsomniaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     var body: some Scene {

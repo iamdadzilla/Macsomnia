@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Grants the current user password-free use of /usr/bin/pmset, so KeepAwake
+# Grants the current user password-free use of /usr/bin/pmset, so Macsomnia
 # can disable/enable sleep without a password prompt. Run once.
 
-RULE_FILE="/etc/sudoers.d/keepawake"
+RULE_FILE="/etc/sudoers.d/macsomnia"
 TMP_FILE="$(mktemp)"
 USER_NAME="$(id -un)"
 
@@ -23,7 +23,7 @@ rm -f "$TMP_FILE"
 echo "Installed $RULE_FILE for user '$USER_NAME'."
 echo "Verifying password-free pmset..."
 if sudo -n /usr/bin/pmset -g >/dev/null 2>&1; then
-    echo "OK — KeepAwake can now run pmset without a password."
+    echo "OK — Macsomnia can now run pmset without a password."
 else
     echo "WARNING: password-free pmset did not work. Check the rule." >&2
     exit 1

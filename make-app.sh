@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Builds a release binary and wraps it in KeepAwake.app with an Info.plist
+# Builds a release binary and wraps it in Macsomnia.app with an Info.plist
 # marking it as a menu-bar (accessory) app.
 
-APP="KeepAwake.app"
+APP="Macsomnia.app"
 CONTENTS="$APP/Contents"
 MACOS="$CONTENTS/MacOS"
 RESOURCES="$CONTENTS/Resources"
@@ -12,11 +12,11 @@ RESOURCES="$CONTENTS/Resources"
 swift build -c release
 rm -rf "$APP"
 mkdir -p "$MACOS" "$RESOURCES"
-cp ".build/release/KeepAwake" "$MACOS/KeepAwake"
+cp ".build/release/Macsomnia" "$MACOS/Macsomnia"
 
 # App icon (regenerate with ./icon/build-icns.sh). Optional — skip if absent.
-if [ -f "KeepAwake.icns" ]; then
-    cp "KeepAwake.icns" "$RESOURCES/KeepAwake.icns"
+if [ -f "Macsomnia.icns" ]; then
+    cp "Macsomnia.icns" "$RESOURCES/Macsomnia.icns"
 fi
 
 cat > "$CONTENTS/Info.plist" <<'PLIST'
@@ -24,14 +24,14 @@ cat > "$CONTENTS/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleName</key>              <string>KeepAwake</string>
-    <key>CFBundleDisplayName</key>       <string>KeepAwake</string>
-    <key>CFBundleIdentifier</key>        <string>net.jperry.KeepAwake</string>
+    <key>CFBundleName</key>              <string>Macsomnia</string>
+    <key>CFBundleDisplayName</key>       <string>Macsomnia</string>
+    <key>CFBundleIdentifier</key>        <string>net.jperry.Macsomnia</string>
     <key>CFBundleVersion</key>           <string>1.0</string>
     <key>CFBundleShortVersionString</key><string>1.0</string>
     <key>CFBundlePackageType</key>       <string>APPL</string>
-    <key>CFBundleExecutable</key>        <string>KeepAwake</string>
-    <key>CFBundleIconFile</key>          <string>KeepAwake</string>
+    <key>CFBundleExecutable</key>        <string>Macsomnia</string>
+    <key>CFBundleIconFile</key>          <string>Macsomnia</string>
     <key>LSMinimumSystemVersion</key>    <string>13.0</string>
     <key>LSUIElement</key>               <true/>
 </dict>
