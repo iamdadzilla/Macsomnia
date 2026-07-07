@@ -10,12 +10,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private var monitor: StateMonitor!
     private var displayTimer: Timer?
     private var autoOffTimer: Timer?
+    private let warningGate = WarningGate(store: UserDefaults.standard)
 
     /// Bumped by the display timer to drive live countdown re-rendering.
     @Published var tick = Date()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)   // menu bar only, no Dock icon
+        presentWarningIfNeeded()                // first run: accept or quit
         requestNotificationAuthorization()
         wireCallbacks()
         startMonitoring()
@@ -24,8 +26,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Safety: never leave the Mac unable to sleep after quit.
+        // Safety: if sleep is currently disabled, restore it on quit. Guarded on
+        // isOn so declining the first-run warning (nothing enabled) can't trigger
+        // a spurious failure alert.
         overlay.hide()
+        guard appState.isOn else { return }
         do {
             try power.disable()
         } catch {
@@ -122,6 +127,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
 
+    // MARK: - First-run warning
+
+    private func presentWarningIfNeeded() {
+        guard !warningGate.hasAccepted else { return }
+        let alert = NSAlert()
+        alert.messageText = "KeepAwake — please read before using"
+        alert.informativeText = """
+        KeepAwake can keep your Mac awake even with the lid closed and no \
+        external display. This deliberately defeats a built-in thermal safeguard.
+
+        Running heavy or sustained workloads in this state can cause dangerous \
+        heat buildup and may damage your hardware. Use it only for light \
+        workloads, and use the auto-off timer.
+
+        You use this app entirely at your own risk. You accept all responsibility \
+        for any damage, data loss, or other consequences. It is provided "as is", \
+        with no warranty of any kind.
+        """
+        alert.alertStyle = .critical
+        alert.addButton(withTitle: "I Understand and Accept")
+        alert.addButton(withTitle: "Quit")
+        NSApp.activate(ignoringOtherApps: true)   // accessory app: bring modal to front
+        if alert.runModal() == .alertFirstButtonReturn {
+            warningGate.accept()
+        } else {
+            NSApp.terminate(nil)
+        }
+    }
+
     // MARK: - Notifications & errors
 
     private func requestNotificationAuthorization() {
@@ -147,4 +181,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         alert.alertStyle = .warning
         alert.runModal()
     }
+}
+
+extension UserDefaults: FlagStore {
+    public func flag(_ key: String) -> Bool { bool(forKey: key) }
+    public func setFlag(_ key: String, _ value: Bool) { set(value, forKey: key) }
 }

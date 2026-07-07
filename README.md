@@ -14,7 +14,8 @@ closed and no external cooling can overheat the machine. Use the auto-off timer.
 
 1. Build the app: `./make-app.sh`, then move `KeepAwake.app` to `/Applications`.
 2. Grant password-free `pmset` (one time): `./install-sudoers.sh`.
-3. Open KeepAwake. A coffee/moon icon appears in the menu bar.
+3. Open KeepAwake. On first launch it shows a one-time danger/liability
+   warning you must accept. A `zzz` icon then appears in the menu bar.
 
 ## Use
 
