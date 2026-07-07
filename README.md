@@ -1,4 +1,4 @@
-# KeepAwake
+# Macsomnia
 
 A macOS menu-bar app that stops your Mac from sleeping — including
 clamshell (lid closed) with no external display — for keeping long-running
@@ -12,9 +12,9 @@ closed and no external cooling can overheat the machine. Use the auto-off timer.
 
 ## Setup
 
-1. Build the app: `./make-app.sh`, then move `KeepAwake.app` to `/Applications`.
+1. Build the app: `./make-app.sh`, then move `Macsomnia.app` to `/Applications`.
 2. Grant password-free `pmset` (one time): `./install-sudoers.sh`.
-3. Open KeepAwake. On first launch it shows a one-time danger/liability
+3. Open Macsomnia. On first launch it shows a one-time danger/liability
    warning you must accept. A `zzz` icon then appears in the menu bar.
 
 ## Use
@@ -23,7 +23,7 @@ closed and no external cooling can overheat the machine. Use the auto-off timer.
 - While ON: a red strip appears across the top of every screen, the label shows
   a live countdown, and an auto-off timer will disable it.
 - **Disable now** turns it off; quitting the app also restores normal sleep.
-- If sleep gets disabled by anything else, KeepAwake detects it within ~5s,
+- If sleep gets disabled by anything else, Macsomnia detects it within ~5s,
   shows the red strip, and notifies you.
 
 ## What it runs

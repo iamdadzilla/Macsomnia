@@ -1,5 +1,5 @@
 import Foundation
-@testable import KeepAwakeCore
+@testable import MacsomniaCore
 
 final class MockPowerController: PowerControlling {
     private(set) var enableCount = 0

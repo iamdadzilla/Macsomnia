@@ -9,7 +9,7 @@ public protocol FlagStore: AnyObject {
 
 /// Tracks whether the user has accepted the first-run danger warning.
 public struct WarningGate {
-    static let acceptedKey = "net.jperry.KeepAwake.hasAcceptedWarning"
+    static let acceptedKey = "net.jperry.Macsomnia.hasAcceptedWarning"
 
     private let store: FlagStore
 

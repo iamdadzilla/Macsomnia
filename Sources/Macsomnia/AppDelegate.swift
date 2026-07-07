@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 import UserNotifications
-import KeepAwakeCore
+import MacsomniaCore
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     let power: PowerControlling = RealPowerController()
@@ -34,9 +34,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         do {
             try power.disable()
         } catch {
-            FileHandle.standardError.write(Data("KeepAwake: failed to restore sleep on quit: \(error)\n".utf8))
+            FileHandle.standardError.write(Data("Macsomnia: failed to restore sleep on quit: \(error)\n".utf8))
             let alert = NSAlert()
-            alert.messageText = "KeepAwake could not restore normal sleep"
+            alert.messageText = "Macsomnia could not restore normal sleep"
             alert.informativeText = """
             Your Mac may remain unable to sleep. Run this in Terminal to fix it:
 
@@ -59,11 +59,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             self?.scheduleAutoOff(at: expiry)
         }
         appState.onExternalDetected = { [weak self] in
-            self?.notify(title: "Keep-Awake is ON",
+            self?.notify(title: "Macsomnia is ON",
                          body: "Sleep was disabled outside this app.")
         }
         appState.onAutoOff = { [weak self] in
-            self?.notify(title: "Keep-Awake turned off",
+            self?.notify(title: "Macsomnia turned off",
                          body: "The auto-off timer elapsed.")
         }
         appState.onReconciledOff = { [weak self] in
@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // MARK: - User actions (from the menu)
 
-    func enable(_ duration: KeepAwakeDuration) {
+    func enable(_ duration: MacsomniaDuration) {
         do {
             try appState.enable(duration)
             tick = Date()
@@ -132,9 +132,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func presentWarningIfNeeded() {
         guard !warningGate.hasAccepted else { return }
         let alert = NSAlert()
-        alert.messageText = "KeepAwake — please read before using"
+        alert.messageText = "Macsomnia — please read before using"
         alert.informativeText = """
-        KeepAwake can keep your Mac awake even with the lid closed and no \
+        Macsomnia can keep your Mac awake even with the lid closed and no \
         external display. This deliberately defeats a built-in thermal safeguard.
 
         Running heavy or sustained workloads in this state can cause dangerous \
@@ -172,7 +172,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     private func presentFailure(_ error: Error) {
         let alert = NSAlert()
-        alert.messageText = "KeepAwake couldn't change sleep settings"
+        alert.messageText = "Macsomnia couldn't change sleep settings"
         alert.informativeText = """
         \(error)
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import KeepAwakeCore
+@testable import MacsomniaCore
 
 final class SleepStateParserTests: XCTestCase {
     func testParsesDisabledTrue() {

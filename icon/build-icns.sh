@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# Regenerates KeepAwake.icns from make-icon.swift.
-# Run from anywhere; writes KeepAwake.icns to the repo root.
+# Regenerates Macsomnia.icns from make-icon.swift.
+# Run from anywhere; writes Macsomnia.icns to the repo root.
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
@@ -18,5 +18,5 @@ for s in 16 32 128 256 512; do
     sips -z "$((s*2))" "$((s*2))" "$MASTER" --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null
 done
 
-iconutil -c icns "$ICONSET" -o "$ROOT/KeepAwake.icns"
-echo "Built $ROOT/KeepAwake.icns"
+iconutil -c icns "$ICONSET" -o "$ROOT/Macsomnia.icns"
+echo "Built $ROOT/Macsomnia.icns"

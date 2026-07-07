@@ -1,6 +1,6 @@
 import Foundation
 
-public enum KeepAwakeDuration: CaseIterable, Equatable {
+public enum MacsomniaDuration: CaseIterable, Equatable {
     case thirtyMinutes
     case twoHours
     case fourHours

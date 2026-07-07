@@ -28,7 +28,7 @@ public final class AppState: ObservableObject {
         self.now = now
     }
 
-    public func enable(_ duration: KeepAwakeDuration) throws {
+    public func enable(_ duration: MacsomniaDuration) throws {
         try power.enable()
         initiatedByApp = true
         setExpiry(duration.timeInterval.map { now().addingTimeInterval($0) })

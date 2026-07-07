@@ -2,17 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "KeepAwake",
+    name: "Macsomnia",
     platforms: [.macOS(.v13)],
     targets: [
-        .target(name: "KeepAwakeCore"),
+        .target(name: "MacsomniaCore"),
         .executableTarget(
-            name: "KeepAwake",
-            dependencies: ["KeepAwakeCore"]
+            name: "Macsomnia",
+            dependencies: ["MacsomniaCore"]
         ),
         .testTarget(
-            name: "KeepAwakeCoreTests",
-            dependencies: ["KeepAwakeCore"]
+            name: "MacsomniaCoreTests",
+            dependencies: ["MacsomniaCore"]
         ),
     ]
 )
