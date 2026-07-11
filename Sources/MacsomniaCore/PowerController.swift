@@ -39,8 +39,13 @@ public final class RealPowerController: PowerControlling {
     }
 
     public func hasPasswordlessAccess() -> Bool {
-        // `sudo -n` fails fast (no prompt) when no passwordless rule applies.
-        (try? capture("/usr/bin/sudo", ["-n", "/usr/bin/pmset", "-g"])) != nil
+        // Grep the user's sudo rules for an actual NOPASSWD pmset grant. This
+        // reflects the installed rule regardless of sudo's credential-cache
+        // state — a plain `sudo -n pmset` would also succeed on a cached
+        // timestamp (e.g. the user ran sudo recently), giving a false positive
+        // and skipping first-run provisioning.
+        guard let listing = try? capture("/usr/bin/sudo", ["-n", "-l"]) else { return false }
+        return listing.range(of: "NOPASSWD:[^\n]*pmset", options: .regularExpression) != nil
     }
 
     // MARK: - Process helpers

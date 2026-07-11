@@ -209,7 +209,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         alert.informativeText = """
         \(error)
 
-        If you haven't yet, run install-sudoers.sh to allow password-free pmset.
+        Try enabling again and authorize the permission prompt. If it keeps \
+        failing, you can grant access manually by running install-sudoers.sh \
+        from the Macsomnia source.
         """
         alert.alertStyle = .warning
         alert.runModal()
