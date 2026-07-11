@@ -4,6 +4,9 @@ public protocol PowerControlling {
     func enable() throws           // sleep 0 ; disablesleep 1
     func disable() throws          // sleep 5 ; disablesleep 0
     func readSleepDisabled() throws -> Bool
+    /// True when `pmset` can be run as root without a password (the sudoers rule
+    /// is installed). Used to decide whether to trigger first-run provisioning.
+    func hasPasswordlessAccess() -> Bool
 }
 
 public struct PmsetError: Error, CustomStringConvertible {
@@ -33,6 +36,11 @@ public final class RealPowerController: PowerControlling {
             throw PmsetError(code: -1, message: "SleepDisabled not found in pmset -g")
         }
         return value
+    }
+
+    public func hasPasswordlessAccess() -> Bool {
+        // `sudo -n` fails fast (no prompt) when no passwordless rule applies.
+        (try? capture("/usr/bin/sudo", ["-n", "/usr/bin/pmset", "-g"])) != nil
     }
 
     // MARK: - Process helpers
