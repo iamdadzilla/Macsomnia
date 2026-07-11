@@ -110,12 +110,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // MARK: - User actions (from the menu)
 
     func enable(_ duration: MacsomniaDuration) {
+        if !power.hasPasswordlessAccess(), !ensurePrivilege() { return }
         do {
             try appState.enable(duration)
             tick = Date()
         } catch {
             presentFailure(error)
         }
+    }
+
+    /// First-run: ask permission, then install the sudoers rule via the native
+    /// admin dialog. Returns true only if password-free pmset now works.
+    private func ensurePrivilege() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = "Macsomnia needs permission to control sleep"
+        alert.informativeText = """
+        To disable sleep, Macsomnia runs the system pmset tool, which requires \
+        administrator rights. macOS will ask you to authorize this once. It \
+        installs a rule allowing password-free pmset, which you can remove any \
+        time with:  sudo rm /etc/sudoers.d/macsomnia
+        """
+        alert.addButton(withTitle: "Grant Permission…")
+        alert.addButton(withTitle: "Cancel")
+        NSApp.activate(ignoringOtherApps: true)
+        guard alert.runModal() == .alertFirstButtonReturn else { return false }
+
+        do {
+            try PrivilegeProvisioner.installSudoersRule()
+        } catch PrivilegeProvisioner.ProvisionError.cancelled {
+            return false
+        } catch {
+            presentFailure(error)
+            return false
+        }
+
+        guard power.hasPasswordlessAccess() else {
+            presentFailure(PrivilegeProvisioner.ProvisionError.failed("permission was not granted"))
+            return false
+        }
+        return true
     }
 
     func disable() {
@@ -176,7 +209,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         alert.informativeText = """
         \(error)
 
-        If you haven't yet, run install-sudoers.sh to allow password-free pmset.
+        Try enabling again and authorize the permission prompt. If it keeps \
+        failing, you can grant access manually by running install-sudoers.sh \
+        from the Macsomnia source.
         """
         alert.alertStyle = .warning
         alert.runModal()

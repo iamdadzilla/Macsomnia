@@ -13,9 +13,14 @@ closed and no external cooling can overheat the machine. Use the auto-off timer.
 ## Setup
 
 1. Build the app: `./make-app.sh`, then move `Macsomnia.app` to `/Applications`.
-2. Grant password-free `pmset` (one time): `./install-sudoers.sh`.
-3. Open Macsomnia. On first launch it shows a one-time danger/liability
-   warning you must accept. A `zzz` icon then appears in the menu bar.
+2. Open Macsomnia. On first launch it shows a one-time danger/liability warning
+   you must accept. A `zzz` icon then appears in the menu bar.
+3. The first time you enable it, macOS asks you to authorize one-time
+   administrator permission (it installs a rule allowing password-free `pmset`).
+
+Prefer to set that up yourself instead of the in-app prompt? Run
+`./install-sudoers.sh` once before first use. Remove the permission any time
+with `sudo rm /etc/sudoers.d/macsomnia`.
 
 ## Use
 
