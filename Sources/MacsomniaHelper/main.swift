@@ -3,11 +3,13 @@ import MacsomniaCore
 
 final class HelperService: NSObject, MacsomniaHelperProtocol, NSXPCListenerDelegate {
     func listener(_ listener: NSXPCListener, shouldAcceptNewConnection c: NSXPCConnection) -> Bool {
-        // Only accept connections from our signed app (Developer ID + our bundle id + our team).
-        do {
-            try c.setCodeSigningRequirement(
-                "anchor apple generic and identifier \"net.jperry.Macsomnia\" and certificate leaf[subject.OU] = \"9RV6LVA7L9\"")
-        } catch { return false }
+        // Restrict callers to our genuine signed app: Apple-issued chain, our
+        // exact signing identifier, and our Team ID in the leaf OU. This is a
+        // void method — the OS enforces the requirement at the connection layer
+        // and invalidates any peer that doesn't satisfy it before it can send a
+        // message, so it must be set before exporting the object / resuming.
+        c.setCodeSigningRequirement(
+            "anchor apple generic and identifier \"net.jperry.Macsomnia\" and certificate leaf[subject.OU] = \"9RV6LVA7L9\"")
         c.exportedInterface = NSXPCInterface(with: MacsomniaHelperProtocol.self)
         c.exportedObject = self
         c.resume()
