@@ -7,7 +7,6 @@ final class MockPowerController: PowerControlling {
     var enableError: Error?
     var sleepDisabledToReturn = false
     var readError: Error?
-    var passwordlessAccess = true
 
     func enable() throws {
         if let enableError { throw enableError }
@@ -22,6 +21,4 @@ final class MockPowerController: PowerControlling {
         if let readError { throw readError }
         return sleepDisabledToReturn
     }
-
-    func hasPasswordlessAccess() -> Bool { passwordlessAccess }
 }

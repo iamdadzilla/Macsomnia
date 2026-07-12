@@ -11,11 +11,31 @@ APP="Macsomnia.app"
 CONTENTS="$APP/Contents"
 MACOS="$CONTENTS/MacOS"
 RESOURCES="$CONTENTS/Resources"
+LAUNCHDAEMONS="$CONTENTS/Library/LaunchDaemons"
 
 swift build -c release
 rm -rf "$APP"
-mkdir -p "$MACOS" "$RESOURCES"
+mkdir -p "$MACOS" "$RESOURCES" "$LAUNCHDAEMONS"
 cp ".build/release/Macsomnia" "$MACOS/Macsomnia"
+
+# Privileged helper daemon (runs pmset as root, reached over XPC).
+cp ".build/release/MacsomniaHelper" "$MACOS/MacsomniaHelper"
+
+# LaunchDaemon plist for the helper. The filename MUST equal the daemon label.
+cat > "$LAUNCHDAEMONS/net.jperry.Macsomnia.helper.plist" <<'DAEMON'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>                  <string>net.jperry.Macsomnia.helper</string>
+    <key>BundleProgram</key>          <string>Contents/MacOS/MacsomniaHelper</string>
+    <key>MachServices</key>
+    <dict><key>net.jperry.Macsomnia.helper</key><true/></dict>
+    <key>AssociatedBundleIdentifiers</key>
+    <array><string>net.jperry.Macsomnia</string></array>
+</dict>
+</plist>
+DAEMON
 
 # App icon (regenerate with ./icon/build-icns.sh). Optional — skip if absent.
 if [ -f "Macsomnia.icns" ]; then

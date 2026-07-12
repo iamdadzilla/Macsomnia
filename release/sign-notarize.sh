@@ -42,8 +42,9 @@ VERSION="${VERSION:-$(plutil -extract CFBundleShortVersionString raw "$APP/Conte
 ZIP="Macsomnia-${VERSION}.zip"
 
 # --- Sign (hardened runtime + secure timestamp) ------------------------------
-# Flat bundle (no nested code), so a single signing pass seals the executable
-# and resources.
+# Order matters: sign the inner (embedded helper) executable first, then the
+# outer app bundle so the final pass seals the fully-signed contents.
+codesign --force --options runtime --timestamp --sign "$DEVID" "$APP/Contents/MacOS/MacsomniaHelper"
 codesign --force --options runtime --timestamp --sign "$DEVID" "$APP"
 codesign --verify --strict --verbose=2 "$APP"
 echo "Signed and verified."

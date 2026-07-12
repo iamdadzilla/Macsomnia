@@ -15,12 +15,11 @@ closed and no external cooling can overheat the machine. Use the auto-off timer.
 1. Build the app: `./make-app.sh`, then move `Macsomnia.app` to `/Applications`.
 2. Open Macsomnia. On first launch it shows a one-time danger/liability warning
    you must accept. A `zzz` icon then appears in the menu bar.
-3. The first time you enable it, macOS asks you to authorize one-time
-   administrator permission (it installs a rule allowing password-free `pmset`).
-
-Prefer to set that up yourself instead of the in-app prompt? Run
-`./install-sudoers.sh` once before first use. Remove the permission any time
-with `sudo rm /etc/sudoers.d/macsomnia`.
+3. The first time you enable it, Macsomnia registers a small privileged helper
+   (an `SMAppService` daemon) that runs `pmset` as root. macOS may ask you to
+   allow Macsomnia's background item in **System Settings → General → Login
+   Items & Extensions** (under "Allow in the Background"). Approve it, then
+   enable again — after that it works without any further prompts.
 
 ## Use
 
@@ -33,5 +32,7 @@ with `sudo rm /etc/sudoers.d/macsomnia`.
 
 ## What it runs
 
-- Enable: `sudo pmset -b sleep 0 ; sudo pmset -b disablesleep 1`
-- Disable: `sudo pmset -b sleep 5 ; sudo pmset -b disablesleep 0`
+The privileged helper daemon runs these as root (reached over XPC):
+
+- Enable: `pmset -b sleep 0 ; pmset -b disablesleep 1`
+- Disable: `pmset -b sleep 5 ; pmset -b disablesleep 0`
