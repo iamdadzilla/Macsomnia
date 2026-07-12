@@ -4,7 +4,7 @@ import UserNotifications
 import MacsomniaCore
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    let power: PowerControlling = RealPowerController()
+    let power: PowerControlling = XPCPowerController()
     lazy var appState = AppState(power: power)
     private let overlay = RedStripOverlay()
     private var monitor: StateMonitor!
@@ -110,7 +110,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // MARK: - User actions (from the menu)
 
     func enable(_ duration: MacsomniaDuration) {
-        if !power.hasPasswordlessAccess(), !ensurePrivilege() { return }
+        if !HelperManager.isEnabled, !ensureHelper() { return }
         do {
             try appState.enable(duration)
             tick = Date()
@@ -119,36 +119,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
 
-    /// First-run: ask permission, then install the sudoers rule via the native
-    /// admin dialog. Returns true only if password-free pmset now works.
-    private func ensurePrivilege() -> Bool {
+    /// First-run: register the privileged helper daemon via SMAppService. macOS
+    /// may require the user to approve Macsomnia's background item in System
+    /// Settings → Login Items before it becomes active. Returns true only once
+    /// the helper is enabled and ready to serve XPC requests.
+    private func ensureHelper() -> Bool {
+        switch HelperManager.status {
+        case .enabled:
+            return true
+        case .requiresApproval:
+            presentApprovalNeeded()
+            return false
+        default:
+            do {
+                try HelperManager.register()
+            } catch {
+                presentFailure(error)
+                return false
+            }
+            if HelperManager.isEnabled { return true }
+            presentApprovalNeeded()
+            return false
+        }
+    }
+
+    /// Directs the user to approve Macsomnia's background item so the helper can run.
+    private func presentApprovalNeeded() {
         let alert = NSAlert()
-        alert.messageText = "Macsomnia needs permission to control sleep"
+        alert.messageText = "Macsomnia needs you to allow its background item"
         alert.informativeText = """
-        To disable sleep, Macsomnia runs the system pmset tool, which requires \
-        administrator rights. macOS will ask you to authorize this once. It \
-        installs a rule allowing password-free pmset, which you can remove any \
-        time with:  sudo rm /etc/sudoers.d/macsomnia
+        To control sleep, Macsomnia installs a small privileged helper that runs \
+        the system pmset tool. macOS requires you to approve it once.
+
+        Open System Settings → General → Login Items & Extensions, then enable \
+        Macsomnia under "Allow in the Background". Then try again.
         """
-        alert.addButton(withTitle: "Grant Permission…")
+        alert.addButton(withTitle: "Open Login Items Settings")
         alert.addButton(withTitle: "Cancel")
         NSApp.activate(ignoringOtherApps: true)
-        guard alert.runModal() == .alertFirstButtonReturn else { return false }
-
-        do {
-            try PrivilegeProvisioner.installSudoersRule()
-        } catch PrivilegeProvisioner.ProvisionError.cancelled {
-            return false
-        } catch {
-            presentFailure(error)
-            return false
+        if alert.runModal() == .alertFirstButtonReturn {
+            HelperManager.openLoginItemsSettings()
         }
-
-        guard power.hasPasswordlessAccess() else {
-            presentFailure(PrivilegeProvisioner.ProvisionError.failed("permission was not granted"))
-            return false
-        }
-        return true
     }
 
     func disable() {
@@ -209,9 +220,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         alert.informativeText = """
         \(error)
 
-        Try enabling again and authorize the permission prompt. If it keeps \
-        failing, you can grant access manually by running install-sudoers.sh \
-        from the Macsomnia source.
+        Try enabling again. If it keeps failing, make sure Macsomnia's background \
+        item is allowed in System Settings → General → Login Items & Extensions \
+        (under "Allow in the Background").
         """
         alert.alertStyle = .warning
         alert.runModal()
