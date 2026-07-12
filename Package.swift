@@ -10,6 +10,10 @@ let package = Package(
             name: "Macsomnia",
             dependencies: ["MacsomniaCore"]
         ),
+        .executableTarget(
+            name: "MacsomniaHelper",
+            dependencies: ["MacsomniaCore"]
+        ),
         .testTarget(
             name: "MacsomniaCoreTests",
             dependencies: ["MacsomniaCore"]
