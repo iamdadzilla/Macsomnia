@@ -10,14 +10,16 @@ set -euo pipefail
 #        xcrun notarytool store-credentials "macsomnia-notary" \
 #          --apple-id <id> --team-id <TEAMID> --password <app-specific-pw>
 #
-# Env overrides:
+# Notary auth — use ONE of:
+#   NOTARY_PROFILE  a stored notarytool keychain profile (local; default macsomnia-notary)
+#   APPLE_ID + APPLE_TEAM_ID + APPLE_APP_PW   explicit credentials (CI)
+#
+# Other env overrides:
 #   DEVID          signing identity (default: auto-detected Developer ID Application)
-#   NOTARY_PROFILE notarytool keychain profile   (default: macsomnia-notary)
 #   VERSION        release version for the zip name (default: from Info.plist)
 
 cd "$(dirname "$0")/.."
 
-NOTARY_PROFILE="${NOTARY_PROFILE:-macsomnia-notary}"
 APP="Macsomnia.app"
 
 # --- Resolve signing identity -------------------------------------------------
@@ -49,7 +51,12 @@ echo "Signed and verified."
 # --- Notarize ----------------------------------------------------------------
 ditto -c -k --keepParent "$APP" "$ZIP"
 echo "Submitting $ZIP to notary service (this can take a few minutes)…"
-xcrun notarytool submit "$ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
+if [ -n "${APPLE_ID:-}" ]; then
+    xcrun notarytool submit "$ZIP" \
+        --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" --password "$APPLE_APP_PW" --wait
+else
+    xcrun notarytool submit "$ZIP" --keychain-profile "${NOTARY_PROFILE:-macsomnia-notary}" --wait
+fi
 
 # --- Staple + repackage the stapled app --------------------------------------
 xcrun stapler staple "$APP"

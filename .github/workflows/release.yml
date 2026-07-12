@@ -1,0 +1,73 @@
+name: Release
+
+# Builds, signs, notarizes, and publishes a Macsomnia release when a version
+# tag is pushed (e.g. `git tag v1.1 && git push origin v1.1`).
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   MACSOMNIA_CERT_P12_BASE64   base64 of the Developer ID Application .p12
+#                               (`base64 -i cert.p12 | pbcopy`)
+#   MACSOMNIA_CERT_PASSWORD     the .p12 export password
+#   MACSOMNIA_KEYCHAIN_PASSWORD any string; password for the ephemeral keychain
+#   APPLE_ID                    Apple ID email used for notarization
+#   APPLE_TEAM_ID               10-char Team ID (9RV6LVA7L9)
+#   APPLE_APP_SPECIFIC_PASSWORD an app-specific password for that Apple ID
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write   # create the release + upload the asset
+
+jobs:
+  release:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Import Developer ID certificate
+        env:
+          CERT_P12_BASE64: ${{ secrets.MACSOMNIA_CERT_P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.MACSOMNIA_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MACSOMNIA_KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          CERT="$RUNNER_TEMP/cert.p12"
+          echo "$CERT_P12_BASE64" | base64 --decode > "$CERT"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$CERT" -k "$KEYCHAIN" -P "$CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          # Make the ephemeral keychain the default search list so find-identity sees the cert.
+          security list-keychain -d user -s "$KEYCHAIN" login.keychain-db
+          rm -f "$CERT"
+
+      - name: Build, sign, notarize, staple
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PW: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"   # v1.1 -> 1.1
+          export VERSION
+          ./release/sign-notarize.sh
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" "Macsomnia-${VERSION}.zip" \
+            --title "Macsomnia ${VERSION}" \
+            --generate-notes
+
+      - name: Report cask update values
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Cask bump for iamdadzilla/homebrew-macsomnia:"
+          echo "  version \"${VERSION}\""
+          echo "  sha256 \"$(shasum -a 256 "Macsomnia-${VERSION}.zip" | awk '{print $1}')\""

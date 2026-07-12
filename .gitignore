@@ -6,3 +6,6 @@ Macsomnia.app/
 # Icon build intermediates (Macsomnia.icns is committed).
 icon/AppIcon.iconset/
 icon/icon_master.png
+
+# Never commit signing keys.
+*.p12
