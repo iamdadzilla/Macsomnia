@@ -97,3 +97,7 @@ sudo rm -f /etc/sudoers.d/macsomnia
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## See also
+
+- [Promotion plan](PROMOTION-PLAN.md) — launch and outreach notes
