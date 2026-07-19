@@ -9,3 +9,6 @@ icon/icon_master.png
 
 # Never commit signing keys.
 *.p12
+
+# Release artifacts — built by release/sign-notarize.sh, published to GitHub Releases.
+Macsomnia-*.zip
