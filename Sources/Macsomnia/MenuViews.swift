@@ -3,11 +3,11 @@ import MacsomniaCore
 
 struct MenuLabel: View {
     @ObservedObject var state: AppState
-    /// Refresh tick source so the countdown updates; value itself is unused.
-    let tick: Date
+    /// Observed so the label re-renders on every tick (see Clock).
+    @ObservedObject var clock: Clock
 
     var body: some View {
-        if let text = state.menuText(now: tick) {
+        if let text = state.menuText(now: clock.now) {
             // ON: red "crossed-out zzz" (sleep disabled) plus the countdown.
             HStack(spacing: 3) {
                 SlashedZzz()
@@ -42,12 +42,12 @@ struct SlashedZzz: View {
 
 struct MenuContent: View {
     @ObservedObject var state: AppState
-    let tick: Date
+    @ObservedObject var clock: Clock
     let onEnable: (MacsomniaDuration) -> Void
     let onDisable: () -> Void
 
     var body: some View {
-        Text(state.statusText(now: tick))
+        Text(state.statusText(now: clock.now))
 
         Divider()
 

@@ -9,12 +9,12 @@ struct MacsomniaApp: App {
         MenuBarExtra {
             MenuContent(
                 state: delegate.appState,
-                tick: delegate.tick,
+                clock: delegate.clock,
                 onEnable: { delegate.enable($0) },
                 onDisable: { delegate.disable() }
             )
         } label: {
-            MenuLabel(state: delegate.appState, tick: delegate.tick)
+            MenuLabel(state: delegate.appState, clock: delegate.clock)
         }
         .menuBarExtraStyle(.menu)
     }

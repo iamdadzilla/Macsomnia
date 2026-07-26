@@ -12,8 +12,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private var autoOffTimer: Timer?
     private let warningGate = WarningGate(store: UserDefaults.standard)
 
-    /// Bumped by the display timer to drive live countdown re-rendering.
-    @Published var tick = Date()
+    /// Ticking time source the menu views observe (see Clock). Driven by the
+    /// display timer; drives the live countdown.
+    let clock = Clock()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)   // menu bar only, no Dock icon
@@ -81,11 +82,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func startDisplayTimer() {
-        // Register in .common mode (not just .default). As an idle menu-bar
-        // agent, the main run loop isn't reliably in .default mode, so a
-        // scheduledTimer (default-only) gets starved and the countdown freezes.
+        // Register in .common mode (not just .default) so it also fires during
+        // menu tracking; scheduledTimer is default-only.
         let timer = Timer(timeInterval: 15, repeats: true) { [weak self] _ in
-            self?.tick = Date()
+            self?.clock.now = Date()
         }
         RunLoop.main.add(timer, forMode: .common)
         displayTimer = timer
@@ -122,7 +122,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         if !HelperManager.isEnabled, !ensureHelper() { return }
         do {
             try appState.enable(duration)
-            tick = Date()
+            clock.now = Date()
         } catch {
             presentFailure(error)
         }
@@ -174,7 +174,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     func disable() {
         do {
             try appState.disableByUser()
-            tick = Date()
+            clock.now = Date()
         } catch {
             presentFailure(error)
         }
