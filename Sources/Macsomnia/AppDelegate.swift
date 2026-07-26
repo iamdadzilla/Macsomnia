@@ -81,9 +81,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func startDisplayTimer() {
-        displayTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
+        // Register in .common mode (not just .default). As an idle menu-bar
+        // agent, the main run loop isn't reliably in .default mode, so a
+        // scheduledTimer (default-only) gets starved and the countdown freezes.
+        let timer = Timer(timeInterval: 15, repeats: true) { [weak self] _ in
             self?.tick = Date()
         }
+        RunLoop.main.add(timer, forMode: .common)
+        displayTimer = timer
     }
 
     private func observeScreenChanges() {
@@ -102,9 +107,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         autoOffTimer = nil
         guard let expiry else { return }
         let interval = max(0, expiry.timeIntervalSinceNow)
-        autoOffTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+        // .common mode too: the safety auto-off must still fire while the app is
+        // an idle menu-bar agent (same starvation as the display timer).
+        let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
             self?.appState.autoOffExpired()
         }
+        RunLoop.main.add(timer, forMode: .common)
+        autoOffTimer = timer
     }
 
     // MARK: - User actions (from the menu)
