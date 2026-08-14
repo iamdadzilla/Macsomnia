@@ -4,6 +4,8 @@ A macOS menu-bar app that stops your Mac from sleeping — including **clamshell
 (lid closed) with no external display** — to keep long-running light jobs (AI
 agents, builds, downloads) alive.
 
+![Macsomnia demo](macsomnia_demo.gif)
+
 When active, a red strip spans the top of every screen and the menu-bar label
 shows a live countdown, so you can never miss that it's on. An auto-off timer
 turns it off after a duration you pick.
