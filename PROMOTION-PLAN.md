@@ -65,20 +65,22 @@ is still running. Macsomnia lets you **close the lid** and walk away.
 
 Complete before any public posts. Promotion amplifies quality; it can't substitute for it.
 
+Ready-to-paste Show HN / Reddit / social copy: [docs/launch-posts.md](docs/launch-posts.md).
+
 ### README (30 min)
 
-- [ ] **Install section at the top** — Homebrew first, GitHub release second, build-from-source last
-- [ ] **10–15 second GIF or screen recording** showing: enable → red strip → close lid → job still running → disable
-- [ ] **"Why not caffeinate?"** — one paragraph: clamshell requires `pmset disablesleep`, not `caffeinate`
-- [ ] **Safety section** — keep the hardware warning prominent
-- [ ] **Screenshot** of menu bar (OFF and ON states)
+- [x] **Install section at the top** — Homebrew first, GitHub release second, build-from-source last
+- [x] **10–15 second GIF or screen recording** showing: enable → red strip → close lid → job still running → disable
+- [x] **"Why not caffeinate?"** — one paragraph: clamshell requires `pmset disablesleep`, not `caffeinate`
+- [x] **Safety section** — keep the hardware warning prominent
+- [ ] **Screenshot** of menu bar (OFF and ON states) — still missing; GIF covers the on-state
 
 ### GitHub repo polish (15 min)
 
-- [ ] Repo description: `Close your MacBook lid while keeping long jobs alive`
-- [ ] Topics: `macos`, `menu-bar`, `sleep`, `clamshell`, `developer-tools`, `swift`, `open-source`
-- [ ] Pin a **v1.0 release** with signed `Macsomnia-1.0.zip`
-- [ ] LICENSE (MIT) visible in repo root
+- [x] Repo description: `Close your MacBook lid while keeping long jobs alive`
+- [x] Topics: `macos`, `menu-bar`, `sleep`, `clamshell`, `developer-tools`, `swift`, `open-source`
+- [x] Pin a **v1.0 release** with signed `Macsomnia-1.0.zip` (latest is v1.3)
+- [x] LICENSE (MIT) visible in repo root
 
 ### Homebrew (verify)
 
@@ -88,8 +90,8 @@ Complete before any public posts. Promotion amplifies quality; it can't substitu
 
 ### Launch assets (1 hour)
 
-- [ ] GIF committed to repo (e.g. `docs/demo.gif`) and embedded in README
-- [ ] Draft posts written (templates below) — customize, don't copy-paste blindly
+- [x] GIF committed to repo (`macsomnia_demo.gif`) and embedded in README
+- [x] Draft posts written — see [docs/launch-posts.md](docs/launch-posts.md)
 - [ ] Calendar block for **2–3 hours** after Show HN to stay in comments
 
 ---

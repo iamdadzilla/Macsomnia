@@ -83,6 +83,15 @@ own signed app is allowed to talk to it:
 `disablesleep 1` is what keeps the Mac awake with the lid closed — stronger than
 the idle-sleep prevention that `caffeinate` and similar tools use.
 
+## Why not caffeinate?
+
+`caffeinate` (and most "keep awake" apps) only prevent **idle** sleep. Close the
+lid with no external display and macOS still sleeps — that's clamshell sleep,
+and `caffeinate` does not stop it. Macsomnia calls `pmset -b disablesleep 1`
+through a signed privileged helper, which is the setting that actually keeps a
+closed MacBook awake. Use `caffeinate` at your desk; use Macsomnia when you want
+to close the lid.
+
 ## Uninstall
 
 ```sh
