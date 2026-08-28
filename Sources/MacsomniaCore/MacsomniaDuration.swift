@@ -19,12 +19,13 @@ public enum MacsomniaDuration: CaseIterable, Equatable {
     }
 
     public var menuLabel: String {
+        let bundle = Bundle.module
         switch self {
-        case .thirtyMinutes: return "30 minutes"
-        case .twoHours:      return "2 hours"
-        case .fourHours:     return "4 hours"
-        case .eightHours:    return "8 hours"
-        case .indefinite:    return "Until I turn it off"
+        case .thirtyMinutes: return NSLocalizedString("duration.30min", bundle: bundle, comment: "")
+        case .twoHours:      return NSLocalizedString("duration.2h", bundle: bundle, comment: "")
+        case .fourHours:     return NSLocalizedString("duration.4h", bundle: bundle, comment: "")
+        case .eightHours:    return NSLocalizedString("duration.8h", bundle: bundle, comment: "")
+        case .indefinite:    return NSLocalizedString("duration.indefinite", bundle: bundle, comment: "")
         }
     }
 }

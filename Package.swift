@@ -3,12 +3,17 @@ import PackageDescription
 
 let package = Package(
     name: "Macsomnia",
+    defaultLocalization: "en",
     platforms: [.macOS(.v13)],
     targets: [
-        .target(name: "MacsomniaCore"),
+        .target(
+            name: "MacsomniaCore",
+            resources: [.process("Resources")]
+        ),
         .executableTarget(
             name: "Macsomnia",
-            dependencies: ["MacsomniaCore"]
+            dependencies: ["MacsomniaCore"],
+            resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "MacsomniaHelper",

@@ -37,14 +37,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         } catch {
             FileHandle.standardError.write(Data("Macsomnia: failed to restore sleep on quit: \(error)\n".utf8))
             let alert = NSAlert()
-            alert.messageText = "Macsomnia could not restore normal sleep"
-            alert.informativeText = """
-            Your Mac may remain unable to sleep. Run this in Terminal to fix it:
-
-            sudo pmset -b disablesleep 0; sudo pmset -b sleep 5
-
-            (\(error))
-            """
+            alert.messageText = NSLocalizedString("error.restore.title", bundle: .module, comment: "")
+            alert.informativeText = String(
+                format: NSLocalizedString("error.restore.body", bundle: .module, comment: ""),
+                "\(error)"
+            )
             alert.alertStyle = .critical
             alert.runModal()
         }
@@ -60,12 +57,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             self?.scheduleAutoOff(at: expiry)
         }
         appState.onExternalDetected = { [weak self] in
-            self?.notify(title: "Macsomnia is ON",
-                         body: "Sleep was disabled outside this app.")
+            self?.notify(title: NSLocalizedString("notification.enabled.title", bundle: .module, comment: ""),
+                         body: NSLocalizedString("notification.enabled.body", bundle: .module, comment: ""))
         }
         appState.onAutoOff = { [weak self] in
-            self?.notify(title: "Macsomnia turned off",
-                         body: "The auto-off timer elapsed.")
+            self?.notify(title: NSLocalizedString("notification.disabled.title", bundle: .module, comment: ""),
+                         body: NSLocalizedString("notification.disabled.body", bundle: .module, comment: ""))
         }
         appState.onReconciledOff = { [weak self] in
             self?.scheduleAutoOff(at: nil)
@@ -155,16 +152,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     /// Directs the user to approve Macsomnia's background item so the helper can run.
     private func presentApprovalNeeded() {
         let alert = NSAlert()
-        alert.messageText = "Macsomnia needs you to allow its background item"
-        alert.informativeText = """
-        To control sleep, Macsomnia installs a small privileged helper that runs \
-        the system pmset tool. macOS requires you to approve it once.
-
-        Open System Settings → General → Login Items & Extensions, then enable \
-        Macsomnia under "Allow in the Background". Then try again.
-        """
-        alert.addButton(withTitle: "Open Login Items Settings")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = NSLocalizedString("approval.title", bundle: .module, comment: "")
+        alert.informativeText = NSLocalizedString("approval.body", bundle: .module, comment: "")
+        alert.addButton(withTitle: NSLocalizedString("button.openSettings", bundle: .module, comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("button.cancel", bundle: .module, comment: ""))
         NSApp.activate(ignoringOtherApps: true)
         if alert.runModal() == .alertFirstButtonReturn {
             HelperManager.openLoginItemsSettings()
@@ -185,22 +176,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func presentWarningIfNeeded() {
         guard !warningGate.hasAccepted else { return }
         let alert = NSAlert()
-        alert.messageText = "Macsomnia — please read before using"
-        alert.informativeText = """
-        Macsomnia can keep your Mac awake even with the lid closed and no \
-        external display. This deliberately defeats a built-in thermal safeguard.
-
-        Running heavy or sustained workloads in this state can cause dangerous \
-        heat buildup and may damage your hardware. Use it only for light \
-        workloads, and use the auto-off timer.
-
-        You use this app entirely at your own risk. You accept all responsibility \
-        for any damage, data loss, or other consequences. It is provided "as is", \
-        with no warranty of any kind.
-        """
+        alert.messageText = NSLocalizedString("warning.title", bundle: .module, comment: "")
+        alert.informativeText = NSLocalizedString("warning.body", bundle: .module, comment: "")
         alert.alertStyle = .critical
-        alert.addButton(withTitle: "I Understand and Accept")
-        alert.addButton(withTitle: "Quit")
+        alert.addButton(withTitle: NSLocalizedString("button.accept", bundle: .module, comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("button.quit", bundle: .module, comment: ""))
         NSApp.activate(ignoringOtherApps: true)   // accessory app: bring modal to front
         if alert.runModal() == .alertFirstButtonReturn {
             warningGate.accept()
@@ -225,14 +205,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     private func presentFailure(_ error: Error) {
         let alert = NSAlert()
-        alert.messageText = "Macsomnia couldn't change sleep settings"
-        alert.informativeText = """
-        \(error)
-
-        Try enabling again. If it keeps failing, make sure Macsomnia's background \
-        item is allowed in System Settings → General → Login Items & Extensions \
-        (under "Allow in the Background").
-        """
+        alert.messageText = NSLocalizedString("error.changeSettings.title", bundle: .module, comment: "")
+        alert.informativeText = String(
+            format: NSLocalizedString("error.changeSettings.body", bundle: .module, comment: ""),
+            "\(error)"
+        )
         alert.alertStyle = .warning
         alert.runModal()
     }

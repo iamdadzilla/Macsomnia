@@ -65,17 +65,21 @@ public final class AppState: ObservableObject {
     /// Compact text for the menu-bar label. `nil` means "OFF" (show icon only).
     public func menuText(now: Date) -> String? {
         guard isOn else { return nil }
-        if !initiatedByApp { return "Awake (ext)" }
-        guard let expiry else { return "Awake ∞" }
-        return "Awake " + Countdown.format(remaining: expiry.timeIntervalSince(now))
+        let bundle = Bundle.module
+        if !initiatedByApp { return NSLocalizedString("menuBar.external", bundle: bundle, comment: "") }
+        guard let expiry else { return NSLocalizedString("menuBar.indefinite", bundle: bundle, comment: "") }
+        let remaining = Countdown.format(remaining: expiry.timeIntervalSince(now))
+        return String(format: NSLocalizedString("menuBar.timed", bundle: bundle, comment: ""), remaining)
     }
 
     /// Full status line shown inside the menu.
     public func statusText(now: Date) -> String {
-        guard isOn else { return "OFF" }
-        if !initiatedByApp { return "ON — set outside this app" }
-        guard let expiry else { return "ON — until turned off" }
-        return "ON — " + Countdown.format(remaining: expiry.timeIntervalSince(now)) + " remaining"
+        guard isOn else { return NSLocalizedString("status.off", bundle: Bundle.module, comment: "") }
+        let bundle = Bundle.module
+        if !initiatedByApp { return NSLocalizedString("status.onExternal", bundle: bundle, comment: "") }
+        guard let expiry else { return NSLocalizedString("status.onIndefinite", bundle: bundle, comment: "") }
+        let remaining = Countdown.format(remaining: expiry.timeIntervalSince(now))
+        return String(format: NSLocalizedString("status.onTimed", bundle: bundle, comment: ""), remaining)
     }
 
     // MARK: - Private

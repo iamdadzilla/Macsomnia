@@ -1,0 +1,17 @@
+/* ── 时长标签 ── */
+"duration.30min"              = "30 分钟";
+"duration.2h"                 = "2 小时";
+"duration.4h"                 = "4 小时";
+"duration.8h"                 = "8 小时";
+"duration.indefinite"         = "直到手动关闭";
+
+/* ── 菜单栏标签 ── */
+"menuBar.external"            = "保持唤醒（外部）";
+"menuBar.indefinite"          = "保持唤醒 ∞";
+"menuBar.timed"               = "保持唤醒 %@";
+
+/* ── 状态文本 ── */
+"status.off"                  = "关闭";
+"status.onExternal"           = "已开启 — 由外部设置";
+"status.onIndefinite"         = "已开启 — 直到手动关闭";
+"status.onTimed"              = "已开启 — 剩余 %@";
