@@ -1,0 +1,17 @@
+/* ── Duration Labels ── */
+"duration.30min"              = "30 minutes";
+"duration.2h"                 = "2 hours";
+"duration.4h"                 = "4 hours";
+"duration.8h"                 = "8 hours";
+"duration.indefinite"         = "Until I turn it off";
+
+/* ── Menu Bar Label ── */
+"menuBar.external"            = "Awake (ext)";
+"menuBar.indefinite"          = "Awake ∞";
+"menuBar.timed"               = "Awake %@";
+
+/* ── Status Text ── */
+"status.off"                  = "OFF";
+"status.onExternal"           = "ON — set outside this app";
+"status.onIndefinite"         = "ON — until turned off";
+"status.onTimed"              = "ON — %@ remaining";

@@ -52,7 +52,7 @@ struct MenuContent: View {
         Divider()
 
         if state.isOn {
-            Button("Disable now", action: onDisable)
+            Button(NSLocalizedString("button.disable", bundle: .module, comment: ""), action: onDisable)
         } else {
             ForEach(MacsomniaDuration.allCases, id: \.self) { duration in
                 Button(duration.menuLabel) { onEnable(duration) }
@@ -61,6 +61,6 @@ struct MenuContent: View {
 
         Divider()
 
-        Button("Quit Macsomnia") { NSApplication.shared.terminate(nil) }
+        Button(NSLocalizedString("button.quitMac", bundle: .module, comment: "")) { NSApplication.shared.terminate(nil) }
     }
 }

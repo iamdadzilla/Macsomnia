@@ -1,0 +1,27 @@
+/* ── First-Run Warning ── */
+"warning.title"               = "Macsomnia — please read before using";
+"warning.body"                = "Macsomnia can keep your Mac awake even with the lid closed and no external display. This deliberately defeats a built-in thermal safeguard.\n\nRunning heavy or sustained workloads in this state can cause dangerous heat buildup and may damage your hardware. Use it only for light workloads, and use the auto-off timer.\n\nYou use this app entirely at your own risk. You accept all responsibility for any damage, data loss, or other consequences. It is provided \"as is\", with no warranty of any kind.";
+"button.accept"               = "I Understand and Accept";
+
+/* ── Helper Approval ── */
+"approval.title"              = "Macsomnia needs you to allow its background item";
+"approval.body"               = "To control sleep, Macsomnia installs a small privileged helper that runs the system pmset tool. macOS requires you to approve it once.\n\nOpen System Settings \u{2192} General \u{2192} Login Items & Extensions, then enable Macsomnia under \"Allow in the Background\". Then try again.";
+"button.openSettings"         = "Open Login Items Settings";
+
+/* ── Error Dialogs ── */
+"error.restore.title"         = "Macsomnia could not restore normal sleep";
+"error.restore.body"          = "Your Mac may remain unable to sleep. Run this in Terminal to fix it:\n\nsudo pmset -b disablesleep 0; sudo pmset -b sleep 5\n\n(%@)";
+"error.changeSettings.title"  = "Macsomnia couldn't change sleep settings";
+"error.changeSettings.body"   = "%@\n\nTry enabling again. If it keeps failing, make sure Macsomnia's background item is allowed in System Settings \u{2192} General \u{2192} Login Items & Extensions (under \"Allow in the Background\").";
+
+/* ── Notifications ── */
+"notification.enabled.title"  = "Macsomnia is ON";
+"notification.enabled.body"   = "Sleep was disabled outside this app.";
+"notification.disabled.title" = "Macsomnia turned off";
+"notification.disabled.body"  = "The auto-off timer elapsed.";
+
+/* ── Menu Buttons ── */
+"button.disable"              = "Disable now";
+"button.quitMac"              = "Quit Macsomnia";
+"button.quit"                 = "Quit";
+"button.cancel"               = "Cancel";

@@ -1,0 +1,27 @@
+/* ── 首次运行警告 ── */
+"warning.title"               = "Macsomnia — 使用前请阅读";
+"warning.body"                = "Macsomnia 可以在合盖且无外接显示器的情况下保持 Mac 唤醒。这会故意绕过内置的散热保护。\n\n在此状态下运行繁重或持续的工作负载可能导致危险的过热，从而损坏硬件。请仅用于轻量工作负载，并使用自动关闭计时器。\n\n您完全自行承担使用本应用的风险。您对任何损坏、数据丢失或其他后果承担全部责任。本应用按\"原样\"提供，不附带任何明示或暗示的保证。";
+"button.accept"               = "我理解并接受";
+
+/* ── 后台项授权 ── */
+"approval.title"              = "Macsomnia 需要您允许其后台项";
+"approval.body"               = "为了控制睡眠，Macsomnia 会安装一个运行系统 pmset 工具的小型特权辅助程序。macOS 要求您批准一次。\n\n请打开\"系统设置\" → \"通用\" → \"登录项与扩展\"，然后在\"允许在后台运行\"下启用 Macsomnia。之后再试一次。";
+"button.openSettings"         = "打开\"登录项\"设置";
+
+/* ── 错误对话框 ── */
+"error.restore.title"         = "Macsomnia 无法恢复正常睡眠";
+"error.restore.body"          = "您的 Mac 可能无法正常休眠。请在终端中运行以下命令修复：\n\nsudo pmset -b disablesleep 0; sudo pmset -b sleep 5\n\n(%@)";
+"error.changeSettings.title"  = "Macsomnia 无法更改睡眠设置";
+"error.changeSettings.body"   = "%@\n\n请尝试重新启用。如果持续失败，请确保 Macsomnia 的后台项已在\"系统设置\" → \"通用\" → \"登录项与扩展\"中被允许（在\"允许在后台运行\"下）。";
+
+/* ── 通知 ── */
+"notification.enabled.title"  = "Macsomnia 已开启";
+"notification.enabled.body"   = "睡眠已在本应用外被禁用。";
+"notification.disabled.title" = "Macsomnia 已关闭";
+"notification.disabled.body"  = "自动关闭计时器已到期。";
+
+/* ── 菜单按钮 ── */
+"button.disable"              = "立即关闭";
+"button.quitMac"              = "退出 Macsomnia";
+"button.quit"                 = "退出";
+"button.cancel"               = "取消";

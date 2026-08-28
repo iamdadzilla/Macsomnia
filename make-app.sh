@@ -18,6 +18,13 @@ rm -rf "$APP"
 mkdir -p "$MACOS" "$RESOURCES" "$LAUNCHDAEMONS"
 cp ".build/release/Macsomnia" "$MACOS/Macsomnia"
 
+# Copy SwiftPM resource bundles (one per target that has resources).
+for bundle in .build/release/Macsomnia_MacsomniaCore.bundle .build/release/Macsomnia_Macsomnia.bundle; do
+    if [ -d "$bundle" ]; then
+        cp -R "$bundle" "$RESOURCES/"
+    fi
+done
+
 # Privileged helper daemon (runs pmset as root, reached over XPC).
 cp ".build/release/MacsomniaHelper" "$MACOS/MacsomniaHelper"
 
@@ -56,6 +63,11 @@ cat > "$CONTENTS/Info.plist" <<PLIST
     <key>CFBundleExecutable</key>        <string>Macsomnia</string>
     <key>CFBundleIconFile</key>          <string>Macsomnia</string>
     <key>LSMinimumSystemVersion</key>    <string>13.0</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>zh-Hans</string>
+    </array>
     <key>LSUIElement</key>               <true/>
 </dict>
 </plist>
